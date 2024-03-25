@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private int currentHealth = 100;
     public PlayerAction currentAction = PlayerAction.Idle;
     public bool performNow = false;
+    public AudioSource takeDMG;
+    public AudioSource hit;
     private void OnEnable()
     {
         currentAction = PlayerAction.Idle;
@@ -87,6 +89,7 @@ public class PlayerController : MonoBehaviour
 
         isPerformingAction = true;
         animationManager.PlayAnimation(animator, currentAction);
+        hit.PlayDelayed(0.6f);
 
         // Display action performed text
        // actionText.text = currentAction.ToString();
@@ -95,6 +98,7 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         animationManager.PlayHurtAnimation(animator);
+        takeDMG.PlayDelayed(-0.5f);
         // Calculate damage based on action and update health
       //  int damage = GameManager.Instance.CalculatePlayerDamage(action);
         currentHealth -= damage;
@@ -103,7 +107,6 @@ public class PlayerController : MonoBehaviour
 
         // Display damage text
         damageText.text = "Damage: " + damage.ToString();
-
     }
 
     public void ResetAction()

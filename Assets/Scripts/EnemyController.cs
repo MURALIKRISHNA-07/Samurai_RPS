@@ -34,6 +34,7 @@ public class EnemyController : MonoBehaviour
     public float actionTimerMax = 3.0f; // Maximum time to perform an action
     public EnemyProfile enemyProfile;
     public PlayerAction currentAction = PlayerAction.Idle;
+    public AudioSource hit;
 
     private bool isPerformingAction = false;
     private int currentHealth = 100;
@@ -87,15 +88,20 @@ public class EnemyController : MonoBehaviour
         if(randomValue<35)
         {
             currentAction = PlayerAction.LowAttack;
+            hit.pitch = 0.9f;
+            hit.PlayDelayed(0.6f);
         }
         else if(randomValue<80)
         {
             currentAction = PlayerAction.HighAttack;
+            hit.pitch = 1.1f;
+            hit.PlayDelayed(0.6f);
         }
         else
         {
             currentAction = PlayerAction.MidAttack;
-
+            hit.pitch = 1f;
+            hit.PlayDelayed(0.6f);
         }
         actionText.text = currentAction.ToString();
 

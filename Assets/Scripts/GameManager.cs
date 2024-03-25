@@ -53,7 +53,8 @@ public class GameManager : MonoBehaviour
         // Reset player and enemy actions
         playerController.ResetAction();
         enemyController.ResetAction();
-        actionDuration =Mathf.RoundToInt( Random.Range(1, 6));
+        actionDuration = 3;
+        //actionDuration =Mathf.RoundToInt( Random.Range(1, 6));
     }
 
     void Update()
