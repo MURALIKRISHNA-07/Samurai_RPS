@@ -190,7 +190,7 @@ public class EnemyController : MonoBehaviour
     {
         // Play hurt animation
         animationManager.PlayHurtAnimation(animator);
-        
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, 100);
         healthSlider.value = currentHealth;

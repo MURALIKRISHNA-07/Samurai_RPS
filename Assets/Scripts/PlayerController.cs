@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour
     public bool performNow = false;
     public AudioSource takeDMG;
     public AudioSource hit;
+
+    public GameObject camObject;
     private void OnEnable()
     {
         currentAction = PlayerAction.Idle;
@@ -99,7 +103,13 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         animationManager.PlayHurtAnimation(animator);
+        
+        //play damage audio
         takeDMG.PlayDelayed(-0.5f);
+        
+        //shake camera
+        StartCoroutine(ShakeDelay(-0.5f));
+
         // Calculate damage based on action and update health
       //  int damage = GameManager.Instance.CalculatePlayerDamage(action);
         currentHealth -= damage;
@@ -108,6 +118,12 @@ public class PlayerController : MonoBehaviour
 
         // Display damage text
         damageText.text = "Damage: " + damage.ToString();
+    }
+
+    IEnumerator ShakeDelay(float shakeTime)
+    {
+        yield return new WaitForSeconds(shakeTime);
+        camObject.GetComponent<ShakeCamera>().shakeTest = true;
     }
 
     public void ResetAction()
