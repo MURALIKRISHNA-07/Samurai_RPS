@@ -127,15 +127,15 @@ public class GameManager : MonoBehaviour
                 switch (playerAction)
                 {
                     case PlayerAction.LowAttack:
-                        yield return new WaitForSeconds(1.33f);
+                        yield return new WaitForSeconds(0.8f);
                         enemyController.TakeDamage(20);
                         break;
                     case PlayerAction.MidAttack:
-                        yield return new WaitForSeconds(1.33f);
+                        yield return new WaitForSeconds(0.8f);
                         enemyController.TakeDamage(20);
                         break;
                     case PlayerAction.HighAttack:
-                        yield return new WaitForSeconds(1.33f);
+                        yield return new WaitForSeconds(0.8f);
                         enemyController.TakeDamage(20);
                         break;
                     default:

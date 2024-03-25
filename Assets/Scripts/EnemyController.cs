@@ -88,18 +88,24 @@ public class EnemyController : MonoBehaviour
         if(randomValue<35)
         {
             currentAction = PlayerAction.LowAttack;
+            
+            //hit audio
             hit.pitch = 0.9f;
             hit.PlayDelayed(0.6f);
         }
         else if(randomValue<80)
         {
             currentAction = PlayerAction.HighAttack;
+            
+            //hit audio
             hit.pitch = 1.1f;
             hit.PlayDelayed(0.6f);
         }
         else
         {
             currentAction = PlayerAction.MidAttack;
+            
+            //hit audio
             hit.pitch = 1f;
             hit.PlayDelayed(0.6f);
         }
@@ -182,12 +188,12 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        // Play hurt animation
+        animationManager.PlayHurtAnimation(animator);
+        
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, 100);
         healthSlider.value = currentHealth;
-
-        // Play hurt animation
-        animationManager.PlayHurtAnimation(animator);
 
         // Display damage text
         damageText.text = "Damage: " + damage.ToString();

@@ -86,9 +86,10 @@ public class PlayerController : MonoBehaviour
     }
     public void PerformAction()
     {
-
         isPerformingAction = true;
         animationManager.PlayAnimation(animator, currentAction);
+        
+        //play hit audio
         hit.PlayDelayed(0.6f);
 
         // Display action performed text
