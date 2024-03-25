@@ -158,7 +158,6 @@ public class EnemyController : MonoBehaviour
         else
         {
             currentAction = PlayerAction.DefendMidAttack;
-
         }
         actionText.text = currentAction.ToString();
 
