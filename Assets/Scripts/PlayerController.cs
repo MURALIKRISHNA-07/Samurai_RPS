@@ -39,17 +39,17 @@ public class PlayerController : MonoBehaviour
     {
         if (!isPerformingAction)
         {
-            if (Input.GetKeyDown(KeyCode.A)) // Low Attack
+            if (Input.GetKeyDown(KeyCode.A)) // High Attack
             {
-                PerformAction(PlayerAction.LowAttack);
+                PerformAction(PlayerAction.HighAttack);
             }
             else if (Input.GetKeyDown(KeyCode.S)) // Mid Attack
             {
                 PerformAction(PlayerAction.MidAttack);
             }
-            else if (Input.GetKeyDown(KeyCode.D)) // High Attack
+            else if (Input.GetKeyDown(KeyCode.D)) // Low Attack
             {
-                PerformAction(PlayerAction.HighAttack);
+                PerformAction(PlayerAction.LowAttack);
             }
             else if (Input.GetKeyDown(KeyCode.J)) // Defend Low Attack
             {
