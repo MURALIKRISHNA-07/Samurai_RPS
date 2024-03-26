@@ -167,13 +167,14 @@ public class GameManager : MonoBehaviour
     // Rows represent player actions, columns represent enemy actions
     private readonly int[,] _outcomeMatrix = new int[7, 7]
     {
+         //                                          ENEMY
         //         LowAttack   MidAttack   HighAttack  DefendLow   DefendMid   DefendHigh  Idle
-        /* Low */    { 2,          1,          1,          2,          0,          0,          0 },
-        /* Mid */    { 0,          2,          1,          0,          2,          2,          0 },
-        /* High */   { 0,          0,          2,          0,          0,          1,          0 },
-        /* DefLow */ { 2,          0,          1,          2,          2,          2,          0 },
+        /* Low */    { 2,          1,          0,          2,          0,          0,          0 },
+        /* Mid */    { 0,          2,          1,          0,          2,          0,          0 },
+        /* High */   { 1,          0,          2,          0,          0,          2,          0 },
+        /* DefLow */ { 2,          1,          1,          2,          2,          2,          0 },
         /* DefMid */ { 1,          2,          1,          2,          2,          2,          0 },
-        /* DefHigh */{ 1,          2,          2,          2,          2,          2,          0 },
+        /* DefHigh */{ 1,          1,          2,          2,          2,          2,          0 },
         /* Idle */   { 1,          1,          1,          1,          1,          1,          2 }
     };
 
