@@ -34,7 +34,10 @@ public class EnemyController : MonoBehaviour
     public float actionTimerMax = 3.0f; // Maximum time to perform an action
     public EnemyProfile enemyProfile;
     public PlayerAction currentAction = PlayerAction.Idle;
-    public AudioSource hit;
+
+    public AudioManager audioManager;
+
+    public GameObject camObject;
 
     private bool isPerformingAction = false;
     private int currentHealth = 100;
@@ -42,7 +45,7 @@ public class EnemyController : MonoBehaviour
     private void OnEnable()
     {
           currentAction = PlayerAction.Idle;
-}
+    }
     private void Start()
     {
         healthSlider.maxValue = currentHealth;
@@ -90,24 +93,21 @@ public class EnemyController : MonoBehaviour
             currentAction = PlayerAction.LowAttack;
             
             //hit audio
-            hit.pitch = 0.9f;
-            hit.PlayDelayed(0.6f);
+            audioManager.PlayHitSound("low", 0.6f);
         }
         else if(randomValue<80)
         {
             currentAction = PlayerAction.HighAttack;
             
             //hit audio
-            hit.pitch = 1.1f;
-            hit.PlayDelayed(0.6f);
+            audioManager.PlayHitSound("high", 0.6f);
         }
         else
         {
             currentAction = PlayerAction.MidAttack;
             
             //hit audio
-            hit.pitch = 1f;
-            hit.PlayDelayed(0.6f);
+            audioManager.PlayHitSound("mid", 0.6f);
         }
         actionText.text = currentAction.ToString();
 
@@ -182,13 +182,21 @@ public class EnemyController : MonoBehaviour
         // Return to idle state
         currentAction = PlayerAction.Idle;
         actionText.text = currentAction.ToString();
-        animationManager.PlayAnimation(animator, currentAction);
+       
+        // COMMENTING THIS LINE FIXED THE ENEMY DELAY ISSUE
+        //animationManager.PlayAnimation(animator, currentAction);
     }
 
     public void TakeDamage(int damage)
     {
         // Play hurt animation
         animationManager.PlayHurtAnimation(animator);
+        
+        //play damage audio
+        audioManager.PlayTakeDamageSound(-0.5f);
+        
+        //shake camera
+        StartCoroutine(ShakeDelay(-0.5f));
 
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, 100);
@@ -199,4 +207,11 @@ public class EnemyController : MonoBehaviour
 
       
     }
+    
+    IEnumerator ShakeDelay(float shakeTime)
+    {
+        yield return new WaitForSeconds(shakeTime);
+        camObject.GetComponent<ShakeCamera>().shakeTest = true;
+    }
+
 }

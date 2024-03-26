@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,8 +26,12 @@ public class PlayerController : MonoBehaviour
     private int currentHealth = 100;
     public PlayerAction currentAction = PlayerAction.Idle;
     public bool performNow = false;
-    public AudioSource takeDMG;
-    public AudioSource hit;
+
+    public AudioManager audioManager;
+
+    private GameManager _gameManager;
+    //public AudioSource takeDMG;
+    //public AudioSource hit;
 
     public GameObject camObject;
     private void OnEnable()
@@ -37,6 +42,9 @@ public class PlayerController : MonoBehaviour
     {
         healthSlider.maxValue = currentHealth;
         healthSlider.value = currentHealth;
+        
+        _gameManager = FindObjectOfType<GameManager>();
+
     }
 
     private void Update()
@@ -46,14 +54,17 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A)) // High Attack
             {
                 PerformAction(PlayerAction.HighAttack);
+                _gameManager.DisplayIndicators(1);
             }
             else if (Input.GetKeyDown(KeyCode.S)) // Mid Attack
             {
                 PerformAction(PlayerAction.MidAttack);
+                _gameManager.DisplayIndicators(2);
             }
             else if (Input.GetKeyDown(KeyCode.D)) // Low Attack
             {
                 PerformAction(PlayerAction.LowAttack);
+                _gameManager.DisplayIndicators(3);
             }
             else if (Input.GetKeyDown(KeyCode.J)) // Defend Low Attack
             {
@@ -74,7 +85,7 @@ public class PlayerController : MonoBehaviour
     {
         if (performNow)
         {
-
+            
            // isPerformingAction = true;
             currentAction = action;
            // animationManager.PlayAnimation(animator, currentAction);
@@ -91,11 +102,33 @@ public class PlayerController : MonoBehaviour
     public void PerformAction()
     {
         isPerformingAction = true;
+        _gameManager.DisplayIndicators(0);
         animationManager.PlayAnimation(animator, currentAction);
-        
-        //play hit audio
-        hit.PlayDelayed(0.6f);
 
+        //play hit audio
+        switch (currentAction)
+        {
+            case PlayerAction.LowAttack:
+                audioManager.PlayHitSound("low", 0.6f);
+                break;
+            case PlayerAction.MidAttack:
+                audioManager.PlayHitSound("mid", 0.6f);
+                break;
+            case PlayerAction.HighAttack:
+                audioManager.PlayHitSound("high", 0.6f);
+                break;
+            case PlayerAction.DefendLowAttack:
+                break;
+            case PlayerAction.DefendMidAttack:
+                break;
+            case PlayerAction.DefendHighAttack:
+                break;
+            case PlayerAction.Idle:
+                break;
+            default:
+                break;
+        }
+        
         // Display action performed text
        // actionText.text = currentAction.ToString();
         performNow = false;
@@ -105,7 +138,7 @@ public class PlayerController : MonoBehaviour
         animationManager.PlayHurtAnimation(animator);
         
         //play damage audio
-        takeDMG.PlayDelayed(-0.5f);
+        audioManager.PlayTakeDamageSound(-0.5f);
         
         //shake camera
         StartCoroutine(ShakeDelay(-0.5f));
