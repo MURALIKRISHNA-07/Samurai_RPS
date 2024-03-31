@@ -66,17 +66,17 @@ public class PlayerController : MonoBehaviour
                 PerformAction(PlayerAction.LowAttack);
                 _gameManager.DisplayIndicators(3);
             }
-            else if (Input.GetKeyDown(KeyCode.J)) // Defend Low Attack
+            else if (Input.GetKeyDown(KeyCode.J)) // Defend High Attack
             {
-                PerformAction(PlayerAction.DefendLowAttack);
+                PerformAction(PlayerAction.HighAttack);
             }
             else if (Input.GetKeyDown(KeyCode.K)) // Defend Mid Attack
             {
                 PerformAction(PlayerAction.DefendMidAttack);
             }
-            else if (Input.GetKeyDown(KeyCode.L)) // Defend High Attack
+            else if (Input.GetKeyDown(KeyCode.L)) // Defend Low Attack
             {
-                PerformAction(PlayerAction.DefendHighAttack);
+                PerformAction(PlayerAction.DefendLowAttack);
             }
         }
     }

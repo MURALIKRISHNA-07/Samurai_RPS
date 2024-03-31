@@ -111,11 +111,9 @@ public class EnemyController : MonoBehaviour
         }
         actionText.text = currentAction.ToString();
 
-        Debug.Log("Enemy performing attack!"+currentAction.ToString());
+        Debug.Log("Enemy performing: "+currentAction);
         // Implement attack logic here
     }
-
-   
 
     void PerformHint()
     {

@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -65,14 +63,6 @@ public class GameManager : MonoBehaviour
         actionDuration = 3;
         
         //actionDuration =Mathf.RoundToInt( Random.Range(1, 6));
-    }
-
-    public IEnumerator BufferTime()
-    {
-        yield return new WaitForSeconds(0.7f);
-        timerText.text = "-";
-        yield return new WaitForSeconds(2f);
-        StartGameLoop();
     }
 
     public void DisplayIndicators(int attack)
@@ -150,6 +140,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public IEnumerator BufferTime()
+    {
+        yield return new WaitForSeconds(0.7f);
+        timerText.text = "-";
+        yield return new WaitForSeconds(2f);
+        StartGameLoop();
+    }
     private void RepeatingBuffer()
     {
         StartCoroutine(BufferTime());
