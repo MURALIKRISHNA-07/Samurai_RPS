@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
 
     public AudioManager audioManager;
 
-    private GameManager _gameManager;
+   
     //public AudioSource takeDMG;
     //public AudioSource hit;
 
@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
         healthSlider.maxValue = currentHealth;
         healthSlider.value = currentHealth;
         
-        _gameManager = FindObjectOfType<GameManager>();
+     
 
     }
 
@@ -54,21 +54,21 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A)) // High Attack
             {
                 PerformAction(PlayerAction.HighAttack);
-                _gameManager.DisplayIndicators(1);
+                GameManager._instance.DisplayIndicators(1);
             }
             else if (Input.GetKeyDown(KeyCode.S)) // Mid Attack
             {
                 PerformAction(PlayerAction.MidAttack);
-                _gameManager.DisplayIndicators(2);
+                GameManager._instance.DisplayIndicators(2);
             }
             else if (Input.GetKeyDown(KeyCode.D)) // Low Attack
             {
                 PerformAction(PlayerAction.LowAttack);
-                _gameManager.DisplayIndicators(3);
+                GameManager._instance.DisplayIndicators(3);
             }
             else if (Input.GetKeyDown(KeyCode.J)) // Defend High Attack
             {
-                PerformAction(PlayerAction.HighAttack);
+                PerformAction(PlayerAction.DefendHighAttack);
             }
             else if (Input.GetKeyDown(KeyCode.K)) // Defend Mid Attack
             {
@@ -77,6 +77,11 @@ public class PlayerController : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.L)) // Defend Low Attack
             {
                 PerformAction(PlayerAction.DefendLowAttack);
+            }
+
+            if (Input.GetKeyDown(KeyCode.H)) // Defend Low Attack
+            {
+                GameManager._instance.isHint = true;
             }
         }
     }
@@ -102,7 +107,7 @@ public class PlayerController : MonoBehaviour
     public void PerformAction()
     {
         isPerformingAction = true;
-        _gameManager.DisplayIndicators(0);
+        GameManager._instance.DisplayIndicators(0);
         animationManager.PlayAnimation(animator, currentAction);
 
         //play hit audio
@@ -149,8 +154,13 @@ public class PlayerController : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, 100);
         healthSlider.value = currentHealth;
 
+        if(currentHealth<=0)
+        {
+            GameManager._instance.GameCompleted(false);
+        }
+
         // Display damage text
-        damageText.text = "Damage: " + damage.ToString();
+        damageText.text = "Player Damage: " + damage.ToString();
     }
 
     IEnumerator ShakeDelay(float shakeTime)

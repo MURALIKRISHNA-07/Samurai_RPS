@@ -1,10 +1,11 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager _instance;
+    public static GameManager _instance;
 
     private PlayerController _playerController;
     private EnemyController _enemyController;
@@ -21,6 +22,18 @@ public class GameManager : MonoBehaviour
     private float _timer = 0.0f;
     private bool _isPerformingAction = false;
     private bool _enemyActionPerformed = false;
+    private bool _gameover = false;
+
+    public GameObject Gameover;
+    public GameObject won;
+    public GameObject failed;
+
+    [SerializeField]
+    private int _damagevalue=35;
+
+    public GameObject Sword;
+    public bool isHint = false;
+
 
     private void Awake()
     {
@@ -50,19 +63,22 @@ public class GameManager : MonoBehaviour
 
     private void StartGameLoop()
     {
-        // Start the timer
-        _audioManager.PlayCountDown(0f);
-        _timer = 0.0f;
-        DisplayIndicators(0);
-        _isPerformingAction = true;
-        _enemyActionPerformed = false;
+        if (!_gameover)
+        {
+            // Start the timer
+            _audioManager.PlayCountDown(0f);
+            _timer = 0.0f;
+            DisplayIndicators(0);
+            _isPerformingAction = true;
+            _enemyActionPerformed = false;
 
-        // Reset player and enemy actions
-        _playerController.ResetAction();
-        _enemyController.ResetAction();
-        actionDuration = 3;
-        
-        //actionDuration =Mathf.RoundToInt( Random.Range(1, 6));
+            // Reset player and enemy actions
+            _playerController.ResetAction();
+            _enemyController.ResetAction();
+            actionDuration = 3;
+            isHint = false;
+            //actionDuration =Mathf.RoundToInt( Random.Range(1, 6));
+        }
     }
 
     public void DisplayIndicators(int attack)
@@ -98,10 +114,17 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         // Update the timer if an action is currently being performed
-        if (_isPerformingAction)
+        if (_isPerformingAction&&!_gameover)
         {
             _timer += Time.deltaTime;
 
+            if (actionDuration - _timer < 1.5f)
+            {
+                if (isHint)
+                {
+                    Sword.SetActive(true);
+                }
+            }
             if (actionDuration-_timer < 1f)
             {
                 timerText.text = "1";            
@@ -111,17 +134,17 @@ public class GameManager : MonoBehaviour
                 timerText.text = Mathf.RoundToInt(actionDuration-_timer).ToString();
             }
 
-            if (actionDuration - _timer < 0.5f)
+            if (actionDuration - _timer < 0.2f)
             {
                 timerText.text = "GO";
-            }
 
-
-            // Check if the action duration has elapsed
-            if (_timer >= actionDuration)
-            {
-                timerText.text = "";
+                // timerText.text = "";
                 // Perform player action
+
+                if (isHint)
+                {
+                    Sword.SetActive(false);
+                }
                 _enemyController.PerformAction();
                 _playerController.PerformAction();
 
@@ -193,15 +216,15 @@ public class GameManager : MonoBehaviour
                 {
                     case PlayerAction.LowAttack:
                         yield return new WaitForSeconds(0.8f);
-                        _enemyController.TakeDamage(20);
+                        _enemyController.TakeDamage(_damagevalue);
                         break;
                     case PlayerAction.MidAttack:
                         yield return new WaitForSeconds(0.8f);
-                        _enemyController.TakeDamage(20);
+                        _enemyController.TakeDamage(_damagevalue);
                         break;
                     case PlayerAction.HighAttack:
                         yield return new WaitForSeconds(0.8f);
-                        _enemyController.TakeDamage(20);
+                        _enemyController.TakeDamage(_damagevalue);
                         break;
                     default:
                         break;
@@ -212,15 +235,15 @@ public class GameManager : MonoBehaviour
                 {
                     case PlayerAction.LowAttack:
                         yield return new WaitForSeconds(0.8f);
-                        _playerController.TakeDamage(20);
+                        _playerController.TakeDamage(_damagevalue);
                         break;
                     case PlayerAction.MidAttack:
                         yield return new WaitForSeconds(0.8f);
-                        _playerController.TakeDamage(20);
+                        _playerController.TakeDamage(_damagevalue);
                         break;
                     case PlayerAction.HighAttack:
                         yield return new WaitForSeconds(0.8f);
-                        _playerController.TakeDamage(20);
+                        _playerController.TakeDamage(_damagevalue);
                         break;
                     default:
                         break;
@@ -231,5 +254,33 @@ public class GameManager : MonoBehaviour
         }
 
        
+    }
+
+    public void GameCompleted(bool isplayerWon)
+    {
+        _gameover = true;
+        if(isplayerWon)
+        {
+            won.SetActive(true);
+            failed.SetActive(false);
+        }
+        else
+        {
+            won.SetActive(false);
+            failed.SetActive(true);
+        }
+        _playerController.gameObject.SetActive(false);
+        _enemyController.gameObject.SetActive(false);
+        Gameover.SetActive(true);
+        
+    }
+
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(1);
+    }
+    public void MainScene()
+    {
+        SceneManager.LoadScene(0);
     }
 }

@@ -2,26 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-[System.Serializable]
-public class EnemyProfile
-{
-    public EnemyType enemyType;
-   
-    // Add any other parameters you want to define for the enemy profile
-    [Range(0, 100)]
-    public int attackValue;
-    [Range(0, 100)]
-    public int defensiveValue;
-    [Range(0, 100)]
-    public int idleValue;
-}
 
-public enum EnemyType
-{
-    Aggressive,
-    Defensive,
-    Normal
-}
 
 public class EnemyController : MonoBehaviour
 {
@@ -32,7 +13,7 @@ public class EnemyController : MonoBehaviour
     public Slider healthSlider;
     public float actionTimerMin = 1.0f; // Minimum time to perform an action
     public float actionTimerMax = 3.0f; // Maximum time to perform an action
-    public EnemyProfile enemyProfile;
+    public EnemyProfileControll enemyProfile;
     public PlayerAction currentAction = PlayerAction.Idle;
 
     public AudioManager audioManager;
@@ -41,6 +22,10 @@ public class EnemyController : MonoBehaviour
 
     private bool isPerformingAction = false;
     private int currentHealth = 100;
+
+    private int defensevalue;
+    private int attackvalue;
+    private int actionvalue;
 
     private void OnEnable()
     {
@@ -53,6 +38,7 @@ public class EnemyController : MonoBehaviour
        // Invoke("PerformAction", Random.Range(actionTimerMin, actionTimerMax)); // Start initial action
         animationManager.PlayAnimation(animator, currentAction);
         actionText.text = currentAction.ToString();
+        GetValues();
     }
 
     public void PerformAction()
@@ -62,14 +48,14 @@ public class EnemyController : MonoBehaviour
             isPerformingAction = true;
 
             // Generate a random number to determine if the enemy will attack or defend
-            int randomValue = Random.Range(1, 100);
+           // int randomValue = Random.Range(1, 100);
 
 
-            if (randomValue < enemyProfile.attackValue)
+            if (actionvalue < enemyProfile.eProfile.attackValue)
             {
                 PerformAttack();
             }
-            else if (randomValue < enemyProfile.attackValue + enemyProfile.defensiveValue)
+            else if (actionvalue < enemyProfile.eProfile.attackValue + enemyProfile.eProfile.defensiveValue)
             {
                 PerformDefend();
             }
@@ -87,15 +73,15 @@ public class EnemyController : MonoBehaviour
 
     void PerformAttack()
     {
-        int randomValue = Random.Range(1, 100);
-        if(randomValue<35)
+       // int randomValue = Random.Range(1, 100);
+        if(attackvalue< enemyProfile.eProfile.lowAttackProbability)
         {
             currentAction = PlayerAction.LowAttack;
             
             //hit audio
             audioManager.PlayHitSound("low", 0.6f);
         }
-        else if(randomValue<80)
+        else if(attackvalue< enemyProfile.eProfile.highAttackProbability)
         {
             currentAction = PlayerAction.HighAttack;
             
@@ -143,13 +129,13 @@ public class EnemyController : MonoBehaviour
 
     void PerformDefend()
     {
-        int randomValue = Random.Range(1, 100);
-        if (randomValue > 35)
+      //  int randomValue = Random.Range(1, 100);
+        if (defensevalue > enemyProfile.eProfile.lowDefenseProbability)
         {
             currentAction = PlayerAction.DefendLowAttack;
 
         }
-        else if (randomValue > 80)
+        else if (defensevalue > enemyProfile.eProfile.highDefenseProbability)
         {
             currentAction = PlayerAction.DefendHighAttack;
         }
@@ -180,6 +166,7 @@ public class EnemyController : MonoBehaviour
         // Return to idle state
         currentAction = PlayerAction.Idle;
         actionText.text = currentAction.ToString();
+        GetValues();
        
         // COMMENTING THIS LINE FIXED THE ENEMY DELAY ISSUE
         //animationManager.PlayAnimation(animator, currentAction);
@@ -200,8 +187,13 @@ public class EnemyController : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, 100);
         healthSlider.value = currentHealth;
 
+        if (currentHealth <= 0)
+        {
+            GameManager._instance.GameCompleted(false);
+        }
+
         // Display damage text
-        damageText.text = "Damage: " + damage.ToString();
+        damageText.text = "Enemy Damage: " + damage.ToString();
 
       
     }
@@ -210,6 +202,38 @@ public class EnemyController : MonoBehaviour
     {
         yield return new WaitForSeconds(shakeTime);
         camObject.GetComponent<ShakeCamera>().shakeTest = true;
+    }
+
+    void GetValues()
+    {
+        actionvalue = Random.Range(1, 100);
+        defensevalue = Random.Range(1, 100);
+        attackvalue = Random.Range(1, 100);
+
+    }
+
+
+    public int ShowHint()
+    {
+        if (actionvalue < enemyProfile.eProfile.attackValue)
+        {
+            if (attackvalue < enemyProfile.eProfile.lowAttackProbability)
+            {
+                return 1;
+            }
+            else if (attackvalue < enemyProfile.eProfile.highAttackProbability)
+            {
+                return 3;
+            }
+            else
+            {
+                return 2;
+            }
+        }
+        else
+        {
+            return 0;
+        }
     }
 
 }
