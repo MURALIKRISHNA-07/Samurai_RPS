@@ -66,7 +66,6 @@ public class GameManager : MonoBehaviour
         if (!_gameover)
         {
             // Start the timer
-            _audioManager.PlayCountDown(0f);
             _timer = 0.0f;
             DisplayIndicators(0);
             _isPerformingAction = true;
@@ -76,7 +75,7 @@ public class GameManager : MonoBehaviour
             _playerController.ResetAction();
             _enemyController.ResetAction();
             actionDuration = 3;
-            isHint = false;
+            //isHint = false;
             //actionDuration =Mathf.RoundToInt( Random.Range(1, 6));
         }
     }
@@ -168,6 +167,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.7f);
         timerText.text = "-";
         yield return new WaitForSeconds(2f);
+        _audioManager.PlayCountDown(0f);
         StartGameLoop();
     }
     private void RepeatingBuffer()
